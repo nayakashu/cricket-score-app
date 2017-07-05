@@ -61,7 +61,7 @@ app.use('/api', playerRouter);
 /**
  * Configure express to serve static html pages inside of your public folder
  */
-// app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, 'public')));
 
 /**
  * Serve index.html upon loading of the webapp

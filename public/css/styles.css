@@ -1,0 +1,101 @@
+html,body,h1,h2,h3,h4,h5,h6 { 
+    font-family: "Segoe UI", sans-serif;
+}
+
+div#search-box {
+    margin-top: 1%;
+    margin-bottom: 1%;
+}
+
+div#players-grid {
+    /*border: 1px solid #DDD;*/
+    padding: 1%;
+}
+
+.navbar-custom {
+    background-color:#229922;
+    color:#ffffff;
+    border-radius:0;
+}
+
+.navbar-custom .navbar-nav > li > a {
+    color:#fff;
+}
+
+.navbar-custom .navbar-nav > .active > a {
+    color: #ffffff;
+    background-color:transparent;
+}
+
+.navbar-custom .navbar-nav > li > a:hover,
+.navbar-custom .navbar-nav > li > a:focus,
+.navbar-custom .navbar-nav > .active > a:hover,
+.navbar-custom .navbar-nav > .active > a:focus,
+.navbar-custom .navbar-nav > .open >a {
+    text-decoration: none;
+    background-color: #33aa33;
+}
+
+.navbar-custom .navbar-brand {
+    color:#eeeeee;
+    font-size: 180%;
+}
+.navbar-custom .navbar-toggle {
+    background-color:#eeeeee;
+}
+.navbar-custom .icon-bar {
+    background-color:#33aa33;
+}
+
+.margin-top-10 {
+    margin-top: 10px;
+}
+
+.text-bold-big {
+    font-weight: 700;
+    font-size: 110%;
+}
+
+.panel .panel-body {
+    font-weight: 700;
+    font-size: 180%;
+}
+
+.panel .panel-body img {
+    margin-right: 10px;
+    margin-left: 10px;
+}
+
+.right-align-content {
+    text-align: right;
+    margin-bottom: 10px;
+}
+
+.cricket-green-btn {
+    background-color: #229922;
+}
+
+.form-inline {
+    display: inline;
+}
+
+.cricket-data-text {
+    width: 10%;
+    border-radius: 8px;
+    border: 1px solid #CCC;
+    padding: 9px;
+    font-size: 70%;
+}
+
+.text-box-high-padding {
+    width: 100%;
+}
+
+.list-group .list-group-item {
+    font-size: 120%;
+    font-weight: 600;
+}
+
+.big-text-box {
+    
+}
