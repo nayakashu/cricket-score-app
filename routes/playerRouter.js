@@ -74,6 +74,67 @@ var routes = function(PlayerModel) {
         });
     });
 
+    /**
+     * Update a player
+     */
+    playerRouter.route('/updatePlayer/:PlayerID')
+
+    .put(function(req, res) {
+        PlayerModel.findById(req.params.PlayerID, function(err, player) {
+            if(err) {
+                res.status(500).send(err);
+            } else {
+                if(player == null) {
+                    res.json({ msg: "No player found for this ID!" });
+                    return;
+                } else {
+                    player.PlayerName = req.body.PlayerName;
+                    player.ODIStats = req.body.ODIStats;
+                    player.TestStats = req.body.TestStats;
+                    player.T20Stats = req.body.T20Stats;
+
+                    // Save the player
+                    player.save(function(err) {
+                        if(err) {
+                            res.status(500).send(err);
+                        } else {
+                            res.json({ msg: "Player details updated successfully"});
+                        }
+                    });
+                }
+            }
+        });
+    });
+
+    /**
+     * Delete a player
+     */
+    playerRouter.route('/deletePlayer/:PlayerID')
+
+    .delete(function(req, res) {
+        PlayerModel.findById(req.params.PlayerID, function(err, player) {
+            if(err) {
+                res.status(500).send(err);
+            } else {
+                if(player == null) {
+                    res.json({ msg: "No player found for this ID!" });
+                    return;
+                } else {
+                   PlayerModel.remove({
+                       _id: req.params.PlayerID
+                   }, function(err, player) {
+                        if(err) {
+                            res.status(500).send(err);
+                            return;
+                        } else {
+                            res.json({ msg: "Player deleted successfully"});
+                        }
+                   });
+                }
+            }
+        });
+    });
+
     return playerRouter;
 };
 

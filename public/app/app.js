@@ -2,46 +2,87 @@ var cricketApp = angular.module('CricketApp', []);
 
 cricketApp.controller('CricketAppController', ['$scope', '$http', '$location', function ($scope, $http, $location) {
 
+    /**
+     * Getting the list of player names
+     */
     var refreshPlayerList = function () {
         var getPlayersURL = apiBaseURL + 'GetPlayers';
         $http.get(getPlayersURL).then(function (response) {
             $scope.allPlayers = response.data;
 
-            // Show details of first player by default
+            /**
+             * Show details of first player by default
+             */
             $scope.selectedPlayer = response.data[0];
             $scope.selectedPlayerID = response.data[0]._id;
         });
     };
 
-    // App Name
+    var resetModal = function () {
+        $scope.successMessage = null;
+        $scope.errorMessage = null;
+        $scope.deleteDisabled = false;
+        $scope.playerAdded = false;
+
+        $scope.playerName = '';
+        
+        $scope.odiBat = '';
+        $scope.odiBowl = '';
+        $scope.odiCatch = '';
+
+        $scope.testBat = '';
+        $scope.testBowl = '';
+        $scope.testCatch = '';
+        
+        $scope.t20Bat = '';
+        $scope.t20Bowl = '';
+        $scope.t20Catch = '';
+    };
+
+    /**
+     * App Name
+     */
     $scope.AppName = "StackRoute Cricket App";
 
-    // Constants
+    /**
+     * Constants
+     */
     var apiBaseURL = $location.$$absUrl + 'api/';
-    $scope.errorMessage = null;
-    $scope.successMessage = null;
 
-    // Get List of all players
+    /**
+     * Reset Modal
+     */
+    resetModal();
+
+    /**
+     * Get List of all players
+     */
     refreshPlayerList();
 
-    // Get data for selected player
+    /**
+     * Get data for the selected player
+     */
     var getPlayerByIDURL = apiBaseURL + 'searchPlayer/';
-    $scope.showDetails = function (playerID) {
+    $scope.getPlayerDetails = function (playerID) {
         $http.get(getPlayerByIDURL + playerID).then(function (response) {
             $scope.selectedPlayer = response.data;
 
-            // Selected player ID
+            /**
+             * Selected player ID
+             */
             $scope.selectedPlayerID = response.data._id;
         });
     };
 
-    // Add / Edit Players data
+    /**
+     * Add / Edit Players data
+     */
     $scope.saveCricketData = function () {
 
         $scope.successMessage = null;
         $scope.errorMessage = null;
 
-        if ($scope.playerName == null) {
+        if ($scope.playerName.length == 0) {
             $scope.errorMessage = "Please provide player name";
             return;
         } else {
@@ -88,9 +129,9 @@ cricketApp.controller('CricketAppController', ['$scope', '$http', '$location', f
                 return;
             }
 
-            // Get data for selected player
-            var savePlayerData = apiBaseURL + 'addPlayer';
-
+            /**
+             * Get data for the player to be added / edited
+             */
             var playerData = {
                 PlayerName: $scope.playerName,
                 ODIStats: {
@@ -110,38 +151,72 @@ cricketApp.controller('CricketAppController', ['$scope', '$http', '$location', f
                 }
             };
 
-            console.log(playerData);
-
-            $http.post(savePlayerData, playerData).then(function (response) {
-                // Reset Modal
-                resetModal();
-                $scope.successMessage = "New player added!";
-            }, function (error) {
-                $scope.errorMessage = error.data;
-            });
-
+            if($scope.editPlayerFlag == false) {
+                var savePlayerURL = apiBaseURL + 'addPlayer/';
+                $http.post(savePlayerURL, playerData).then(function (response) {
+                    $scope.successMessage = "New Player Added!";
+                    $scope.playerAdded = true;
+                }, function (error) {
+                    $scope.errorMessage = error.data;
+                });
+            }
+            
+            if($scope.editPlayerFlag == true) {
+                var editPlayerURL = apiBaseURL + 'updatePlayer/';
+                $http.put(editPlayerURL + $scope.selectedPlayer._id, playerData).then(function (response) {
+                    $scope.successMessage = "Player Details Updated!";
+                }, function (error) {
+                    $scope.errorMessage = error.data;
+                });
+            }
         }
+    };
+    
+    $scope.setAddPlayerFlag = function () {
+        resetModal();
+        $scope.editPlayerFlag = false;
+        $scope.modalTitle = 'Add New Player';
+    };
 
-    }
+    $scope.editPlayer = function () {
+        if($scope.selectedPlayer == null) {
+            return;
+        } else {
+            $scope.successMessage = null;
+            $scope.errorMessage = null;
+
+            $scope.playerName = $scope.selectedPlayer.PlayerName;
+            
+            $scope.odiBat = $scope.selectedPlayer.ODIStats.Batting;
+            $scope.odiBowl = $scope.selectedPlayer.ODIStats.Bowling;
+            $scope.odiCatch = $scope.selectedPlayer.ODIStats.Catching;
+
+            $scope.testBat = $scope.selectedPlayer.TestStats.Batting;
+            $scope.testBowl = $scope.selectedPlayer.TestStats.Bowling;
+            $scope.testCatch = $scope.selectedPlayer.TestStats.Catching;
+            
+            $scope.t20Bat = $scope.selectedPlayer.T20Stats.Batting;
+            $scope.t20Bowl = $scope.selectedPlayer.T20Stats.Bowling;
+            $scope.t20Catch = $scope.selectedPlayer.T20Stats.Catching;
+
+            $scope.editPlayerFlag = true;
+            $scope.modalTitle = 'Edit Player';
+        }
+    };
+
+    $scope.deletePlayer = function (playerID) {
+        var deletePlayerURL = apiBaseURL + 'deletePlayer/';
+        $http.delete(deletePlayerURL + playerID).then(function (response) {
+            $scope.successMessage = "Player Deleted!";
+            $scope.deleteDisabled = true;
+            console.log('Player Deleted');
+        }, function (error) {
+            $scope.errorMessage = error.data;
+        });
+    };
 
     $scope.closeModal = function () {
         resetModal();
         refreshPlayerList();
-    }
-
-    var resetModal = function () {
-        $scope.playerName = '';
-        $scope.successMessage = null;
-        $scope.errorMessage = null;
-        $scope.odiBat = '';
-        $scope.odiBowl = '';
-        $scope.odiCatch = '';
-        $scope.testCatch = '';
-        $scope.testBat = '';
-        $scope.testBowl = '';
-        $scope.t20Catch = '';
-        $scope.t20Bat = '';
-        $scope.t20Bowl = '';
     };
-
 }]);
